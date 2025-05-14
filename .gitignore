@@ -1,0 +1,35 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+replay_pid*
+
+# VS Code
+.vscode/
+
+# Build
+/target/
+build/
+
+# Logs
+*.log
+logs/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# H2 database
+*.mv.db
+*.h2.db
+*.trace.db
+
+# application.properties
+*.properties

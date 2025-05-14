@@ -1,0 +1,50 @@
+package ru.home.training.java.cetrification.spring;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import ru.home.training.java.cetrification.spring.model.Person;
+import ru.home.training.java.cetrification.spring.repositories.PersonRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class PersonService {
+
+    @Autowired
+    private PersonRepository personRepository;
+
+    // Добавление нового человека
+    public Person addPerson(Person person) {
+        return personRepository.save(person);
+    }
+
+    // Получение списка всех людей
+    public List<Person> getAllPersons() {
+        return personRepository.findAll();
+    }
+
+    // Поиск человека по ID
+    public Person getPersonById(Long id) {
+        Optional<Person> person = personRepository.findById(id);
+        return person.orElse(null); // Возвращает null, если человек не найден
+    }
+
+    // Обновление данных человека
+    public Person updatePerson(Long id, Person personDetails) {
+        Person person = personRepository.findById(id).orElse(null);
+        if (person != null) {
+            person.setName(personDetails.getName());
+            person.setSurname(personDetails.getSurname());
+            personRepository.save(person);
+        }
+        return person; // Возвращает обновленные данные или null,
+        // если человек не найден
+    }
+
+    // Удаление человека по ID
+    public void deletePerson(Long id) {
+        personRepository.deleteById(id);
+    }
+
+}
