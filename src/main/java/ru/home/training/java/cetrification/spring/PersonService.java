@@ -2,7 +2,8 @@ package ru.home.training.java.cetrification.spring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.home.training.java.cetrification.spring.model.Person;
+import ru.home.training.java.cetrification.exseptions.PersonNotFoundExseption;
+import ru.home.training.java.cetrification.spring.model.*;
 import ru.home.training.java.cetrification.spring.repositories.PersonRepository;
 
 import java.util.List;
@@ -46,5 +47,20 @@ public class PersonService {
     public void deletePerson(Long id) {
         personRepository.deleteById(id);
     }
+    
+    // Добавление адреса 
+    public void addAddressToPerson(Long id, String city, String street) {
+        Person person = personRepository.findById(id).orElse(null);
+        if(person != null){
+            Address address = new Address();
+            address.setCity(city);
+            address.setStreet(street);
+            person.setAddress(address);
+            personRepository.save(person);
+        } else {
+            throw new PersonNotFoundExseption(id);
+        }
+    }
+
 
 }

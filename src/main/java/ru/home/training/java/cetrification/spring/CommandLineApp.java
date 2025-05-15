@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 
+import ru.home.training.java.cetrification.exseptions.PersonNotFoundExseption;
 import ru.home.training.java.cetrification.spring.model.Person;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class CommandLineApp {
                 System.out.println("3 - Найти человека по ID");
                 System.out.println("4 - Обновить данные человека");
                 System.out.println("5 - Удалить человека");
+                System.out.println("6 - Указать адрес  человека");
                 System.out.println("0 - Выход");
 
                 int choice = scanner.nextInt();
@@ -54,6 +56,9 @@ public class CommandLineApp {
                     case 5:
                         deletePerson(scanner);
                         break;
+                    case 6: 
+                        addAddressToPerson(scanner);   
+                        break;
                     case 0:
                         System.out.println("Выход из программы...");
                         System.exit(0);
@@ -72,6 +77,10 @@ public class CommandLineApp {
         System.out.println("Введите фамилию:");
         String surname = scanner.nextLine();
         Person person = new Person(name, surname);
+        System.out.println("Введите возраст:");
+        int age  = scanner.nextInt();
+        person.setAge(age);
+        scanner.nextLine(); // очистка буфера 
         personService.addPerson(person);
         System.out.println("Человек добавлен: " + person);
     }
@@ -114,6 +123,23 @@ public class CommandLineApp {
         Long id = scanner.nextLong();
         personService.deletePerson(id);
         System.out.println("Человек удален.");
+    }
+
+    private void addAddressToPerson(Scanner scanner) {
+        System.out.println("Введите ID человека:");
+        Long id = scanner.nextLong();
+        scanner.nextLine(); // очистка буфера
+        System.out.println("Введите город:");
+        String city = scanner.nextLine();
+        System.out.println("Введите улицу:");
+        String street = scanner.nextLine();
+        try{
+            personService.addAddressToPerson(id, city, street);
+            System.out.println("Адрес добавлен.");
+        } catch(PersonNotFoundExseption e) {
+            System.out.println(e.getMessage());
+        }
+        
     }
 
 }

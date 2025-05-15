@@ -15,6 +15,8 @@ public class Person {
 
     private String surname;
 
+    private Integer age;
+
     // Внешний ключ на таблицу addresses (поле address_id будет создано в таблице persons)
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id") // Название столбца
@@ -60,12 +62,27 @@ public class Person {
         this.address = address;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
+        String addressString = "aдрес не указан";
+
+        if(address != null){
+            addressString= address.getCity() + ", " + address.getStreet();
+        }
+
         return "Person {" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                '}';
+                ", age='" + age + '\'' +
+                "} проживает по адресу: " +  addressString;
     }
 }
