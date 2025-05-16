@@ -22,7 +22,7 @@ public class PersonService {
 
     // Получение списка всех людей
     public List<Person> getAllPersons() {
-        return personRepository.findAll();
+        return personRepository.findPersonsWhithAddresses(); //Использует @Query(Select ...)
     }
 
     // Поиск человека по ID
@@ -61,6 +61,20 @@ public class PersonService {
             throw new PersonNotFoundExseption(id);
         }
     }
+        
+    // Поиск по имени
+    public List<Person> getPersonByName (String name) {
+        return personRepository.findByName(name);
+    }
+        
+    //поиск по диапазону возраста 
+    public List<Person> getPersonByAgeBetween(Integer min, Integer max) {
+        return personRepository.findByAgeBetween(min, max);
+    }
 
+    //Писк по городу
+    public List<Person> getPersonByCity(String city) {
+        return personRepository.findByAddressCity(city);
+    }
 
 }

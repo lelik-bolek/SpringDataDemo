@@ -18,11 +18,19 @@ public class CommandLineApp {
     @Autowired
     private PersonService personService;
 
+    /**
+     * Главный метод приложения, запускающий Spring Boot приложение
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
         System.out.println("Кодировка: " + System.getProperty("file.encoding"));
         SpringApplication.run(CommandLineApp.class, args);
     }
 
+    /**
+     * Создает и возвращает CommandLineRunner для обработки команд пользователя
+     * @return CommandLineRunner с основной логикой приложения
+     */
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
@@ -35,6 +43,9 @@ public class CommandLineApp {
                 System.out.println("4 - Обновить данные человека");
                 System.out.println("5 - Удалить человека");
                 System.out.println("6 - Указать адрес  человека");
+                System.out.println("7 - Найти людей по городу проживания");
+                System.out.println("8 - Найти людей по возрасту");
+                System.out.println("9 - Найти людей по имени");
                 System.out.println("0 - Выход");
 
                 int choice = scanner.nextInt();
@@ -59,6 +70,15 @@ public class CommandLineApp {
                     case 6: 
                         addAddressToPerson(scanner);   
                         break;
+                    case 7: 
+                        getPersonByCity(scanner);
+                        break;
+                    case 8: 
+                        getPersonByAgeBetween(scanner);   
+                        break;
+                    case 9: 
+                        getPersonByName(scanner);   
+                        break;
                     case 0:
                         System.out.println("Выход из программы...");
                         System.exit(0);
@@ -71,6 +91,57 @@ public class CommandLineApp {
         };
     }
 
+    /**
+     * Поиск людей по имени
+     * @param scanner объект Scanner для ввода данных
+     */
+    private void getPersonByName(Scanner scanner) {
+        System.out.println("Введите имя");
+        String name = scanner.nextLine();
+        List<Person> persons = personService.getPersonByName(name);
+        if(persons.isEmpty()){
+            System.out.println("Люди с именем:" + name + " не найдены!");
+        } else {
+            persons.forEach(System.out::println);
+        }
+    }
+
+    /**
+     * Поиск людей по диапазону возрастов
+     * @param scanner объект Scanner для ввода данных
+     */
+    private void getPersonByAgeBetween(Scanner scanner) {
+        System.out.println("Введите минимальный возраст: min");
+        int minAge = scanner.nextInt();
+        System.out.println("Введите максимальный возраст: max");
+        int maxAge = scanner.nextInt();
+        List<Person> persons = personService.getPersonByAgeBetween(minAge, maxAge);
+        if(persons.isEmpty()){
+            System.out.println("Люди в диапазоне возрастов от :" + minAge + " до " +  maxAge + " не найдены!");
+        } else {
+            persons.forEach(System.out::println);
+        }
+    }
+
+    /**
+     * Поиск людей по городу проживания
+     * @param scanner объект Scanner для ввода данных
+     */
+    private void getPersonByCity(Scanner scanner) {
+        System.out.println("Введите город");
+        String city = scanner.nextLine();
+        List<Person> persons = personService.getPersonByCity(city);
+        if(persons.isEmpty()){
+            System.out.println("Люди в городе:" + city + " не найдены!");
+        } else {
+            persons.forEach(System.out::println);
+        }
+    }
+
+    /**
+     * Добавление нового человека
+     * @param scanner объект Scanner для ввода данных
+     */
     private void addPerson(Scanner scanner) {
         System.out.println("Введите имя:");
         String name = scanner.nextLine();
@@ -85,11 +156,18 @@ public class CommandLineApp {
         System.out.println("Человек добавлен: " + person);
     }
 
+    /**
+     * Отображение всех людей в системе
+     */
     private void showAllPersons() {
         List<Person> persons = personService.getAllPersons();
         persons.forEach(System.out::println);
     }
 
+    /**
+     * Поиск человека по ID
+     * @param scanner объект Scanner для ввода данных
+     */
     private void findPersonById(Scanner scanner) {
         System.out.println("Введите ID человека:");
         Long id = scanner.nextLong();
@@ -101,6 +179,10 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Обновление данных человека
+     * @param scanner объект Scanner для ввода данных
+     */
     private void updatePerson(Scanner scanner) {
         System.out.println("Введите ID человека для обновления:");
         Long id = scanner.nextLong();
@@ -118,6 +200,10 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Удаление человека по ID
+     * @param scanner объект Scanner для ввода данных
+     */
     private void deletePerson(Scanner scanner) {
         System.out.println("Введите ID человека для удаления:");
         Long id = scanner.nextLong();
@@ -125,6 +211,10 @@ public class CommandLineApp {
         System.out.println("Человек удален.");
     }
 
+    /**
+     * Добавление адреса человеку
+     * @param scanner объект Scanner для ввода данных
+     */
     private void addAddressToPerson(Scanner scanner) {
         System.out.println("Введите ID человека:");
         Long id = scanner.nextLong();
