@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 
-import ru.home.training.java.cetrification.exseptions.PersonNotFoundExseption;
+import ru.home.training.java.cetrification.exseptions.PersonNotFoundException;
 import ru.home.training.java.cetrification.spring.model.Person;
 
 import java.util.List;
@@ -46,6 +46,7 @@ public class CommandLineApp {
                 System.out.println("7 - Найти людей по городу проживания");
                 System.out.println("8 - Найти людей по возрасту");
                 System.out.println("9 - Найти людей по имени");
+                System.out.println("10 - Увеличить возраст всех людей на 1 и удалить age > 100");
                 System.out.println("0 - Выход");
 
                 int choice = scanner.nextInt();
@@ -78,6 +79,9 @@ public class CommandLineApp {
                         break;
                     case 9: 
                         getPersonByName(scanner);   
+                        break;
+                    case 10:
+                        personService.increaseAgeForAllPPersons();
                         break;
                     case 0:
                         System.out.println("Выход из программы...");
@@ -226,7 +230,7 @@ public class CommandLineApp {
         try{
             personService.addAddressToPerson(id, city, street);
             System.out.println("Адрес добавлен.");
-        } catch(PersonNotFoundExseption e) {
+        } catch(PersonNotFoundException e) {
             System.out.println(e.getMessage());
         }
         
