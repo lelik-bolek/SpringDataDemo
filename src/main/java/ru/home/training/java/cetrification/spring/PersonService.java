@@ -2,7 +2,8 @@ package ru.home.training.java.cetrification.spring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.home.training.java.cetrification.exseptions.PersonNotFoundExseption;
+import jakarta.transaction.Transactional;
+import ru.home.training.java.cetrification.exseptions.PersonNotFoundException;
 import ru.home.training.java.cetrification.spring.model.*;
 import ru.home.training.java.cetrification.spring.repositories.PersonRepository;
 
@@ -58,7 +59,7 @@ public class PersonService {
             person.setAddress(address);
             personRepository.save(person);
         } else {
-            throw new PersonNotFoundExseption(id);
+            throw new PersonNotFoundException(id);
         }
     }
         
@@ -75,6 +76,30 @@ public class PersonService {
     //Писк по городу
     public List<Person> getPersonByCity(String city) {
         return personRepository.findByAddressCity(city);
+    }
+
+    //@Transactional
+    //Добавляем +1 год, кроме тех у кого `age: null`
+    //Недостаток - оздается много запросов к БД можно переделать чере @Queru
+    /*public void increaseAgeForAllPPersons() {
+        List<Person> persons = personRepository.findAll();
+        for(Person person : persons){
+            if(person.getAge() != null){
+                person.setAge(person.getAge() + 1);
+            }
+        }
+        // При включенной опции `@Transactional` даже при отсутствии явного сохранения save(), сохранение будет выполнено по тому, что
+        // будет выполнен commit - который сохранит данные в БД
+        // НО ЯВНОЕ ЛУЧШЕ - чем НЕявное!
+        //personRepository.saveAll(persons);
+    }
+    */
+
+    //Обновленный метод добавляем +1 год, через personRepository.increaseAgeForAllPPersons();
+    @Transactional
+    public void increaseAgeForAllPPersons(){
+        personRepository.increaseAgeForAllPPersons();
+        personRepository.deleteByAgeGreaterThanEqual(100); // > 100 age
     }
 
 }
