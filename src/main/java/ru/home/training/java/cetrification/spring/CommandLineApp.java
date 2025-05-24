@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.OptimisticLockingFailureException;
 
+import jakarta.persistence.OptimisticLockException;
 import ru.home.training.java.cetrification.exseptions.PersonNotFoundException;
 import ru.home.training.java.cetrification.spring.model.Person;
 
@@ -47,6 +49,7 @@ public class CommandLineApp {
                 System.out.println("8 - Найти людей по возрасту");
                 System.out.println("9 - Найти людей по имени");
                 System.out.println("10 - Увеличить возраст всех людей на 1 и удалить age > 100");
+                System.out.println("11 - Изменение Имени человека");
                 System.out.println("0 - Выход");
 
                 int choice = scanner.nextInt();
@@ -83,6 +86,9 @@ public class CommandLineApp {
                     case 10:
                         personService.increaseAgeForAllPPersons();
                         break;
+                    case 11: 
+                        changeName(scanner);   
+                        break;
                     case 0:
                         System.out.println("Выход из программы...");
                         System.exit(0);
@@ -93,6 +99,32 @@ public class CommandLineApp {
                 }
             }
         };
+    }
+    /**
+     * Обновляе Имя person
+     * @param scanner
+     */
+    private void changeName(Scanner scanner) {
+        System.out.println("Введите ID человека:");
+        Long id = scanner.nextLong();
+        scanner.nextLine(); // очистка буфера
+        Person person = personService.getPersonById(id);
+        if (person != null) {
+            System.out.println("Найденный человек: " + person);
+        } else {
+            System.out.println("Человек с таким ID:" + id + " не найден.");
+        }
+
+        System.out.println("Введите новое имя");
+        String name = scanner.nextLine();
+        try{
+            personService.changeName(person, name);
+            System.out.println("Имя успешно изменено");
+        } catch(OptimisticLockingFailureException e){
+            System.out.println("Ошибка изменения имени: кто то уже изменил данные");
+            System.out.println("Повторно попробуйте изменить имя позже");
+        }
+        
     }
 
     /**
@@ -168,6 +200,7 @@ public class CommandLineApp {
         persons.forEach(System.out::println);
     }
 
+
     /**
      * Поиск человека по ID
      * @param scanner объект Scanner для ввода данных
@@ -179,7 +212,7 @@ public class CommandLineApp {
         if (person != null) {
             System.out.println("Найденный человек: " + person);
         } else {
-            System.out.println("Человек с таким ID не найден.");
+            System.out.println("Человек с таким ID:" + id + " не найден.");
         }
     }
 

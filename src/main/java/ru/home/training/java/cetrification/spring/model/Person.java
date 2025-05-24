@@ -17,6 +17,9 @@ public class Person {
 
     private Integer age;
 
+    @Version
+    private Integer version;
+
     // Внешний ключ на таблицу addresses (поле address_id будет создано в таблице persons)
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id") // Название столбца
@@ -70,6 +73,15 @@ public class Person {
         this.age = age;
     }
 
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+
     @Override
     public String toString() {
         String addressString = "aдрес не указан";
@@ -83,6 +95,7 @@ public class Person {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", age='" + age + '\'' +
+                ", version='" + version + '\'' +
                 "} проживает по адресу: " +  addressString;
     }
 }
