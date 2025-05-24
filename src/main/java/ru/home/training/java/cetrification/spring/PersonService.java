@@ -102,4 +102,10 @@ public class PersonService {
         personRepository.deleteByAgeGreaterThanEqual(100); // > 100 age
     }
 
+    // Обновляет имя Person
+    public void changeName(Person person, String name) {
+        person.setName(name);
+        personRepository.save(person);
+    }
+
 }
